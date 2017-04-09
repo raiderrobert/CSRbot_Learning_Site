@@ -1,5 +1,5 @@
 {% extends "courses/layout.html" %}
-{% load course_extras %}
+{% load course_extras static %}
 
 
 {% block title %}{{ step.title }} | {{ step.course.title }} {{ block.super }}{% endblock %}
@@ -8,13 +8,32 @@
     <li><a href="{% url 'courses:detail' pk=step.course.pk %}">{{ step.course.title }}</a></li>
 {% endblock %}
 
+{% block css %}
+<style type="text/css" media="screen">
+    #editor {
+height: 400px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
+
     <div class="row columns">
         <article>
             {{ block.super }}
             <h1>{{ step.title }}</h1>
             {{ step.description|markdown_to_html }}
-            {{ step.content|markdown_to_html }}
+            <div id="editor">{{ step.content }}</div>
         </article>
     </div>
+{% endblock %}
+{% block javascript %}
+
+    <script src="{% static 'js/ace/ace.js' %}"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.getSession().setMode("ace/mode/python");
+</script>
+
 {% endblock %}
